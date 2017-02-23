@@ -5,12 +5,14 @@ define([
 	"underscore",
 	"backbone",
 	"auth/authModel",
-	"text!auth/authTemplate.html"
+	"text!auth/authTemplate.html",
+	"shared/util"
 ], ($, // eslint-disable-line max-params
     _,
     Backbone,
     AuthModel,
-	AuthTemplate) => {
+	AuthTemplate,
+	Util) => {
 	"use strict";
 
 	class AuthView extends Backbone.View {
@@ -45,7 +47,25 @@ define([
 			const login = this.$("#login").val();
 			const pass = this.$("#password").val();
 			this.setAuthModelData(login, pass);
-			this.model.save();
+			this.model.save(this.loginSuccess, this.loginError, this);
+		}
+
+		loginSuccess(){
+			Util.setCurrentUser({
+				login: this.$("#login").val(),
+				pass: this.$("#password").val()
+			})
+			window.location = Util.indexUrl();
+		}
+
+		loginError(){
+			this.displayAuthError();
+		}
+		
+		displayAuthError(data){
+			this.$(".submitAuth").css("background", "red");
+			this.$(".submitAuth").text("Try again")
+			
 		}
 
 		setAuthModelData(login, password){

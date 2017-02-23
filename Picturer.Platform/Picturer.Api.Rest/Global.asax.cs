@@ -5,7 +5,6 @@ using System.Net.Http.Formatting;
 using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
-using Picturer.Api.Rest.App_Start;
 
 namespace Picturer.Api.Rest
 {

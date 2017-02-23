@@ -3,10 +3,12 @@
 define([
 	"jquery",
 	"underscore",
-	"backbone"
+	"backbone",
+	"shared/util"
 ], ($,
 	_,
-	Backbone) => {
+	Backbone,
+	Util) => {
 	"use strict";
 
 	class PictureModel extends Backbone.Model {
@@ -17,7 +19,7 @@ define([
 			}
 			this.set({ "previewURL": options.previewURL });
 			this.set({ "webformatURL": options.webformatURL });
-			this.url = "http://10.143.12.99:1001/api/picture";
+			this.url = `${Util.getPlatformUrl()}/api/picture`;
 		}
 
 		defaults() {
@@ -33,7 +35,7 @@ define([
 		save(success, error, context) {
 			$.ajax({
 				"type": "POST",
-				"url": "http://10.143.12.99:1001/api/picture",
+				"url": this.url,
 				"crossDomain": true,
 				"data": this.postLikedModel(),
 				"dataType": "json",
@@ -57,16 +59,16 @@ define([
 		postLikedModel() {
 			return {
 				"Id": this.get("id"),
-				"User": "MainUser5",
+				"User": Util.getCurrentUser().login,
 				"Liked": "true",
-				"SearchKey": "MainUser5"
+				"SearchKey": Util.getCurrentUser().login
 			};
 		}
 
 		destroyLikedModelLink() {
 			const id = encodeURIComponent(this.get("id"));
-			const user = encodeURIComponent("MainUser5");
-			return `http://10.143.12.99:1001/api/picture/?searchKey=${user}&paramToDelete=${id}`;
+			const user = encodeURIComponent(Util.getCurrentUser().login);
+			return `${this.url}/?searchKey=${user}&paramToDelete=${id}`;
 		}
 	}
 	return PictureModel;

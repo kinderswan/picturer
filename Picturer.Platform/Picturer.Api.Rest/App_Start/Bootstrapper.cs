@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
@@ -12,7 +9,7 @@ using Picturer.RedisConnector.Serializers;
 using Picturer.Repository.Interfaces;
 using Picturer.Services.Interfaces;
 
-namespace Picturer.Api.Rest.App_Start
+namespace Picturer.Api.Rest
 {
 	public class Bootstrapper
 	{

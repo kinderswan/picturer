@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IUserInfoRepository.cs" />
+    <Compile Include="UserInfoRepository.cs" />
     <Compile Include="PictureRepository.cs" />
     <Compile Include="Interfaces\IPictureRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -10,7 +10,8 @@ require.config({
 		"masonry": "../libs/masonry",
 		"simplemodal": "../libs/jquery.simplemodal.1.4.4.min",
 		"text": "../libs/text",
-		"underscore": "../libs/underscore"
+		"underscore": "../libs/underscore",
+		"cookiejs": "../libs/js.cookie"
 	},
 	"shim": {
 		"backbone": {

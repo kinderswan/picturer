@@ -20,17 +20,25 @@ namespace Picturer.Api.Rest.Controllers
 	[EnableCors(origins: "*", headers: "*", methods: "*")]
 	public class AuthController : ApiController
 	{
+		private IUserInfoService _userInfoService;
 
-		public AuthController()
+		public AuthController(IUserInfoService userService)
 		{
-			
+			this._userInfoService = userService;
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("auth")]
-		public IHttpActionResult GetUser()
+		public async Task<IHttpActionResult> UserAuth([FromBody]UserInfoViewModel model)
 		{
-			return this.Json(1);
+			string accessText = await this._userInfoService.IsUserAuthored(model.Login, model.Password);
+
+			if (string.IsNullOrEmpty(accessText))
+			{
+				return this.Ok("User is authored");
+			}
+
+			return this.BadRequest(accessText);
 		}
 	}
 }

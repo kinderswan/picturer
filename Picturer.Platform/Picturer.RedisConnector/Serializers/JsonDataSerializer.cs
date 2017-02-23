@@ -8,6 +8,11 @@ namespace Picturer.RedisConnector.Serializers
 	{
 		public T DeserializeStringDataToObject<T>(StringData data)
 		{
+			if (string.IsNullOrEmpty(data.Value))
+			{
+				return default(T);
+			}
+
 			return JsonConvert.DeserializeObject<T>(data.Value);
 		}
 

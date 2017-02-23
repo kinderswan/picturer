@@ -4,8 +4,9 @@ define([
 	"jquery",
 	"backbone",
 	"pictures/picturesView",
-    "auth/authView"
-], ($, Backbone, PicturesView, AuthView) => {
+	"auth/authView",
+	"shared/util"
+], ($, Backbone, PicturesView, AuthView, Util) => {
 	"use strict";
 
     /**
@@ -24,7 +25,10 @@ define([
          * @memberOf Router
          */
 		routes() {
-			return { "": "index" };
+			return {
+				"": "index",
+				"home": "home"
+			};
 		}
 
         /**
@@ -34,21 +38,24 @@ define([
          *
          * @memberOf Router
          */
-		index() {
-			$.ajax({
-				"url": "http://10.143.12.99:1001/api/auth",
-				"type": "GET",
-				"success": function (data) {
-					if (data == "") {
-						new AuthView({ "el": "#mainDiv" });
-					}
-					else {
-						new PicturesView({ "el": "#mainDiv",
-							"user": data
-						});
-					}
-				}
-			});			
+		index() {	
+			if (Util.getCurrentUser()) {
+				this.navigate("home", { "trigger":true });
+			} else {
+				new AuthView({
+					"el": "#mainDiv"
+				});
+			}
+		}
+
+		home() {
+			if (!Util.getCurrentUser()) {
+				this.navigate("", { "trigger": true });
+			} else {
+				new PicturesView({
+					"el": "#mainDiv"
+				});
+			}
 		}
     }
 

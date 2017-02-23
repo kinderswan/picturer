@@ -37,7 +37,7 @@ namespace Picturer.Repository
 
 		public async Task<bool> DeletePictureById(string searchKey, string id)
 		{
-			var getSaved = await this.mRedisConnection.GetStringFromDatabase(searchKey);
+			StringData getSaved = await this.mRedisConnection.GetStringFromDatabase(searchKey);
 			List<PictureModel> models = this.mJsonSerializer.DeserializeStringDataToObject<List<PictureModel>>(getSaved)
 				.Where(x => x.Id != id).ToList();
 			return await this.mRedisConnection.WriteStringToDatabase(new StringData(searchKey, this.mJsonSerializer.SerializeToString(models)));
@@ -55,8 +55,8 @@ namespace Picturer.Repository
 
 		private async Task<string> BuildStringThatShouldBeWrittenAsync(PictureModel model)
 		{
-			var sb = new StringBuilder();
-			var savedInRedis = await this.mRedisConnection.GetStringFromDatabase(model.SearchKey);
+			StringBuilder sb = new StringBuilder();
+			StringData savedInRedis = await this.mRedisConnection.GetStringFromDatabase(model.SearchKey);
 			string strToWrite = this.mJsonSerializer.SerializeToStringData(model).Value;
 
 			if (string.IsNullOrEmpty(savedInRedis.Value) )

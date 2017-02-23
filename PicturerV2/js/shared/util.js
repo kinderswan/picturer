@@ -1,5 +1,5 @@
 /* jshint esversion:6 */
-define([], () => {
+define(["jquery", "cookiejs"], ($, Cookies) => {
 	class Util {
 		/**
 		 * Wraps something to array
@@ -15,6 +15,22 @@ define([], () => {
 				return something;
 			}
 			return [something];
+		}
+
+		static getPlatformUrl() {
+			return "http://10.143.12.99:1001";
+		}
+		
+		static getCurrentUser(){
+			return Cookies.getJSON("CurrentUser");
+		}
+
+		static setCurrentUser(user){
+			Cookies.set("CurrentUser", user);
+		}
+
+		static indexUrl(){
+			return "localhost:1000/#";
 		}
 	}
 
