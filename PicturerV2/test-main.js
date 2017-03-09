@@ -27,7 +27,8 @@ require.config({
         "text": "libs/text",
         "underscore": "libs/underscore",
         "pictures": "js/pictures",
-        "shared": "js/shared"
+        "shared": "js/shared",
+        "cookiejs": "libs/js.cookie"
     },
     "shim": {
         "backbone": {

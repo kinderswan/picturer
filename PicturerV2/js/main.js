@@ -11,7 +11,10 @@ require.config({
 		"simplemodal": "../libs/jquery.simplemodal.1.4.4.min",
 		"text": "../libs/text",
 		"underscore": "../libs/underscore",
-		"cookiejs": "../libs/js.cookie"
+		"cookiejs": "../libs/js.cookie",
+		"jszip": "../libs/jszip",
+		"jszipUtils": "../libs/jszip-utils",
+		"filesaver": "../libs/filesaver"
 	},
 	"shim": {
 		"backbone": {

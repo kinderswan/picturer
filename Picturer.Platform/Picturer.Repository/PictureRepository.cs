@@ -26,8 +26,10 @@ namespace Picturer.Repository
 
 		public async Task<bool> WritePicture(PictureModel model)
 		{
+			var searchKey = "pictures" + model.SearchKey;
+			model.SearchKey = searchKey;
 			string shouldBeWritten = await this.BuildStringThatShouldBeWrittenAsync(model);
-			return await this.mRedisConnection.WriteStringToDatabase(new StringData(model.SearchKey, shouldBeWritten));
+			return await this.mRedisConnection.WriteStringToDatabase(new StringData(searchKey, shouldBeWritten));
 		}
 
 		public async Task<bool> DeletePicture(string searchKey)

@@ -38,13 +38,11 @@ define([
          *
          * @memberOf Router
          */
-		index() {	
+		index() {
 			if (Util.getCurrentUser()) {
 				this.navigate("home", { "trigger":true });
 			} else {
-				new AuthView({
-					"el": "#mainDiv"
-				});
+				new AuthView({ "el": "#mainDiv" });
 			}
 		}
 
@@ -52,9 +50,7 @@ define([
 			if (!Util.getCurrentUser()) {
 				this.navigate("", { "trigger": true });
 			} else {
-				new PicturesView({
-					"el": "#mainDiv"
-				});
+				new PicturesView({ "el": "#mainDiv" });
 			}
 		}
     }

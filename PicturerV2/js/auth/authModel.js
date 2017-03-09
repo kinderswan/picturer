@@ -23,7 +23,7 @@ define([
 				"Password": ""
 			};
 		}
-		
+
 		save(success, error, context) {
 			$.ajax({
 				"type": "POST",

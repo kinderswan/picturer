@@ -20,17 +20,17 @@ define(["jquery", "cookiejs"], ($, Cookies) => {
 		static getPlatformUrl() {
 			return "http://10.143.12.99:1001";
 		}
-		
-		static getCurrentUser(){
+
+		static getCurrentUser() {
 			return Cookies.getJSON("CurrentUser");
 		}
 
-		static setCurrentUser(user){
+		static setCurrentUser(user) {
 			Cookies.set("CurrentUser", user);
 		}
 
-		static indexUrl(){
-			return "localhost:1000/#";
+		static indexUrl() {
+			return "http://10.143.12.99:1000/";
 		}
 	}
 

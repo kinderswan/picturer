@@ -8,7 +8,9 @@ define([
 	"pictures/pictureCollection",
 	"text!pictures/picturesViewTemplate.html",
 	"pictures/pictureModelView",
-	"bridget"
+	"bridget",
+	"pictures/likesCollection",
+	"shared/zipDownloader"
 
 ], ($, // eslint-disable-line max-params
     _,
@@ -17,7 +19,9 @@ define([
     PictureCollection,
     picturesViewTemplate,
     PictureModelView,
-    bridget) => {
+    bridget,
+	LikesCollection,
+	ZipDownloader) => {
 	"use strict";
 
 	class PicturesView extends Backbone.View {
@@ -34,7 +38,10 @@ define([
 		}
 
 		events() {
-			return { "click #searchImages, #loadMoreImages": "searchImages" };
+			return {
+				"click #searchImages, #loadMoreImages": "searchImages",
+				"click #downloadLikes": "downloadLikes"
+			};
 		}
 
 		constructor(options) {
@@ -42,14 +49,17 @@ define([
 			bridget("masonry", Masonry);
 			this.template = _.template(picturesViewTemplate);
 			this.collection = new PictureCollection();
+			this.likesCollection = new LikesCollection();
 			this.render();
 			this.initializeCollectionEvents();
 			this.pictureImages = [];
 			this.renderMasonryGrid();
+			this.zipDownloader = new ZipDownloader();
 		}
 
 		initializeCollectionEvents() {
 			this.collection.on("ImagesAdded", this.renderSearchResults, this);
+			this.likesCollection.on("LikesAdded", this.likeFoundResults, this);
 		}
 
 		initializeMasonryEvents($container) {
@@ -67,6 +77,7 @@ define([
 			this.$el.html(this.template({}));
 			this.$("#loadMoreImages").addClass("hidden");
 			this.initializeLoadMoreButtonEvents();
+			this.getLikesResults();
 		}
 
 		renderMasonryGrid() {
@@ -101,6 +112,11 @@ define([
 			_.each(this.pictureImages, (image) => {
 				image.render(this.$container);
 			});
+			this.likeFoundResults(this.likesCollection.likedModelIds);
+		}
+
+		getLikesResults(event) {
+			this.likesCollection.getLikes();
 		}
 
 		getPictures(collection, size) {
@@ -128,7 +144,17 @@ define([
 		findImageModel(src) {
 			return _.find(this.pictureImages, (image) => {
 				const model = image.model.toJSON();
-				return model.previewURL === src || model.webformatURL === src;
+				return model.previewURL === src || model.webformatURL === src || model.id === Number(src);
+			});
+		}
+
+		likeFoundResults(likedModels) {
+			const that = this;
+			_.each(likedModels, (model) => {
+				const el = that.findImageModel(model);
+				if (el) {
+					el.clickLike();
+				}
 			});
 		}
 
@@ -140,6 +166,10 @@ define([
 					this.$("#loadMoreImages").removeClass("hidden");
 				}
 			});
+		}
+
+		downloadLikes() {
+			this.zipDownloader.getZippedArchive(this.likesCollection.likedModelIds);
 		}
     }
 

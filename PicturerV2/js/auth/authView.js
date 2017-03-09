@@ -33,12 +33,10 @@ define([
 		}
 
 		events() {
-			return {
-				"click .submitAuth": "submitAuth"
-			};
+			return { "click .submitAuth": "submitAuth" };
 		}
 
-		render(){
+		render() {
 			this.$el.html(this.template({}));
 		}
 
@@ -50,26 +48,25 @@ define([
 			this.model.save(this.loginSuccess, this.loginError, this);
 		}
 
-		loginSuccess(){
+		loginSuccess() {
 			Util.setCurrentUser({
-				login: this.$("#login").val(),
-				pass: this.$("#password").val()
-			})
-			window.location = Util.indexUrl();
+				"login": this.$("#login").val(),
+				"password": this.$("#password").val()
+			});
+			window.open(Util.indexUrl() + "home", "_self");
 		}
 
-		loginError(){
+		loginError() {
 			this.displayAuthError();
 		}
-		
-		displayAuthError(data){
+
+		displayAuthError(data) {
 			this.$(".submitAuth").css("background", "red");
-			this.$(".submitAuth").text("Try again")
-			
+			this.$(".submitAuth").text("Try again");
 		}
 
-		setAuthModelData(login, password){
-			this.model.set({ 
+		setAuthModelData(login, password) {
+			this.model.set({
 				"Login": login,
 				"Password": password
 			 });

@@ -39,6 +39,7 @@ define([
 				"crossDomain": true,
 				"data": this.postLikedModel(),
 				"dataType": "json",
+				"beforeSend": this.addHttpHeaders,
 				"success": success,
 				"error": error,
 				"context": context
@@ -50,6 +51,7 @@ define([
 				"type": "DELETE",
 				"url": this.destroyLikedModelLink(),
 				"crossDomain": true,
+				"beforeSend": this.addHttpHeaders,
 				"success": success,
 				"error": error,
 				"context": context
@@ -69,6 +71,11 @@ define([
 			const id = encodeURIComponent(this.get("id"));
 			const user = encodeURIComponent(Util.getCurrentUser().login);
 			return `${this.url}/?searchKey=${user}&paramToDelete=${id}`;
+		}
+
+		addHttpHeaders(xhr) {
+			xhr.setRequestHeader("Login", Util.getCurrentUser().login);
+			xhr.setRequestHeader("Password", Util.getCurrentUser().password);
 		}
 	}
 	return PictureModel;

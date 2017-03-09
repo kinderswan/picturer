@@ -31,7 +31,7 @@ namespace Picturer.Api.Rest.Controllers
 		[Route("auth")]
 		public async Task<IHttpActionResult> UserAuth([FromBody]UserInfoViewModel model)
 		{
-			string accessText = await this._userInfoService.IsUserAuthored(model.Login, model.Password);
+			string accessText = await this._userInfoService.IsUserAuthored("auth" + model.Login, model.Password);
 
 			if (string.IsNullOrEmpty(accessText))
 			{

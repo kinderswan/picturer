@@ -10,6 +10,7 @@ using System.Web.Http.Cors;
 using System.Web.Http.Results;
 using AutoMapper;
 using Newtonsoft.Json;
+using Picturer.Api.Rest.Filters;
 using Picturer.Api.Rest.Models;
 using Picturer.Models;
 using Picturer.Services.Interfaces;
@@ -36,7 +37,7 @@ namespace Picturer.Api.Rest.Controllers
 		[Route("picture/{searchKey}")]
 		public async Task<IHttpActionResult> GetPicture(string searchKey)
 		{
-			PictureModels models = await this.mPictureService.GetPictures(searchKey);
+			PictureModels models = await this.mPictureService.GetPictures("pictures" + searchKey);
 			return this.Json(models);
 		}
 
@@ -51,16 +52,17 @@ namespace Picturer.Api.Rest.Controllers
 
 		[HttpDelete]
 		[Route("picture/{searchKey}")]
+		[CustomAuthFilterAttribute]
 		public async Task<IHttpActionResult> DeletePicture(string searchKey)
 		{
-			return this.Json(await this.mPictureService.DeletePicture(searchKey));
+			return this.Json(await this.mPictureService.DeletePicture("pictures" + searchKey));
 		}
 
 		[HttpDelete]
 		[Route("picture")]
 		public async Task<IHttpActionResult> DeletePictureByUrl([FromUri]string searchKey, [FromUri]string paramToDelete)
 		{
-			return this.Json(await this.mPictureService.DeletePictureById(searchKey, paramToDelete));
+			return this.Json(await this.mPictureService.DeletePictureById("pictures" + searchKey, paramToDelete));
 		}
 	}
 }
