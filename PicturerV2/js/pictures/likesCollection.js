@@ -23,11 +23,16 @@ define([
      */
 	class LikesCollection extends Backbone.Collection {
 
+		constructor(options) {
+			super(options);
+			this.likedModelIds = [];
+		}
+
 		getLikes() {
 			this.createGetLikesCall();
 		}
 
-		createGetLikesCall(success, error, context) {
+		createGetLikesCall(success, error) {
 			$.ajax({
 				"type": "GET",
 				"url": this.buildRequestUrl(),
@@ -35,13 +40,13 @@ define([
 				"dataType": "json",
 				"success": this.getLikesSuccess,
 				"error": error,
-				"context": this,
-				"beforeSend": this.addHttpHeaders
+				"beforeSend": this.addHttpHeaders,
+				"context": this
 			});
 		}
 
 		buildRequestUrl() {
-			return `${Util.getPlatformUrl()}/api/picture/${Util.getCurrentUser().login}`;
+			return `${Util.getPlatformUrl()}/api/picture/${Util.getCurrentUser()}`;
 		}
 
 		getLikesSuccess(data) {
@@ -49,7 +54,6 @@ define([
 		}
 
 		generateLikesCollection(models) {
-			this.likedModelIds = [];
 			_.each(models, (model) => {
 				this.likedModelIds.push(model.Id);
 			});
@@ -57,6 +61,11 @@ define([
 
 		addHttpHeaders(xhr) {
 			xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+		}
+
+		dispose() {
+			this.likedModelIds = [];
+			Backbone.dispose.call(this);
 		}
     }
 

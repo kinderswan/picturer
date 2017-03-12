@@ -1,21 +1,30 @@
 /* jshint esversion:6 */
-define(["jszip", "jquery", "json!shared/urlConfig.json", "underscore", "jszipUtils", "filesaver"], (JSZip, $, urlConfig, _, JSZipUtils, FileSaver) => {
+define(["jszip",
+	"jquery",
+	"json!shared/urlConfig.json",
+	"underscore",
+	"jszipUtils",
+	"filesaver"], (JSZip, $, urlConfig, _, JSZipUtils, FileSaver) => { // eslint-disable-line max-params, no-unused-vars
 	class ZipDownloader {
 
 		constructor() {
 			this.fileURLs = [];
-			this.zip = new JSZip();
+			this.zip = null;
 		}
 
 		getZippedArchive(ids) {
-			const that = this;
-			$.when(
-				_.each(ids, (id) => {
-					const url = that.getFullUrl(id);
-					that.getPictureJpeg(url);
-				}
-			)).done($.proxy(this.proceedWithFileUrls, this));
 			this.fileURLs = [];
+			$.when.apply($, this.getDeferredsArchive(ids)).done($.proxy(this.proceedWithFileUrls, this));
+		}
+
+		getDeferredsArchive(ids) {
+			const defArray = [];
+			for (let i = 0; i < ids.length; i++) {
+				const url = this.getFullUrl(ids[i]);
+				const urlDef = this.getPictureJpeg(url);
+				defArray.push(urlDef);
+			}
+			return defArray;
 		}
 
 		getFullUrl(searchId) {
@@ -31,7 +40,7 @@ define(["jszip", "jquery", "json!shared/urlConfig.json", "underscore", "jszipUti
 			if (!url) {
 				return "";
 			}
-			$.ajax({
+			return $.ajax({
 				"type": "GET",
 				"url": url,
 				"crossDomain": true,
@@ -47,6 +56,7 @@ define(["jszip", "jquery", "json!shared/urlConfig.json", "underscore", "jszipUti
 		}
 
 		proceedWithFileUrls() {
+			this.zip = new JSZip();
 			let count = 0;
 			const that = this;
 			this.fileURLs.forEach((url) => {
@@ -58,7 +68,10 @@ define(["jszip", "jquery", "json!shared/urlConfig.json", "underscore", "jszipUti
 					that.zip.file(`${count}.jpg`, data, { "binary": true });
 					count++;
 					if (count === that.fileURLs.length) {
-						const zipFile = that.zip.generate({ "type": "blob", "compression" : "DEFLATE"});
+						const zipFile = that.zip.generate({
+							"type": "blob",
+							"compression" : "STORE"
+						});
 						saveAs(zipFile, filename);
 					}
 				});

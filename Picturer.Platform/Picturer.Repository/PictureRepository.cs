@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,10 +24,8 @@ namespace Picturer.Repository
 
 		public async Task<bool> WritePicture(PictureModel model)
 		{
-			var searchKey = "pictures" + model.SearchKey;
-			model.SearchKey = searchKey;
 			string shouldBeWritten = await this.BuildStringThatShouldBeWrittenAsync(model);
-			return await this.mRedisConnection.WriteStringToDatabase(new StringData(searchKey, shouldBeWritten));
+			return await this.mRedisConnection.WriteStringToDatabase(new StringData(model.SearchKey, shouldBeWritten));
 		}
 
 		public async Task<bool> DeletePicture(string searchKey)
@@ -69,12 +65,22 @@ namespace Picturer.Repository
 			{
 				sb.Append(savedInRedis.Value).Insert(savedInRedis.Value.Length - 1, strToWrite);
 			}
+			else if (this.CheckIfDuplicate(savedInRedis, model))
+			{
+				return savedInRedis.Value;
+			}
 			else
 			{
 				sb.Append(savedInRedis.Value).Insert(savedInRedis.Value.Length - 1, "," + strToWrite);
 			}
 
 			return sb.ToString();
+		}
+
+		private bool CheckIfDuplicate(StringData data, PictureModel model)
+		{
+			List<PictureModel> modelsInRedis = this.mJsonSerializer.DeserializeStringDataToObject<List<PictureModel>>(data);
+			return modelsInRedis.Any(x => x.Id == model.Id);
 		}
 	}
 }

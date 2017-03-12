@@ -18,10 +18,7 @@ define([
 		}
 
 		defaults() {
-			return {
-				"Login": "",
-				"Password": ""
-			};
+			return { "UserHash": "" };
 		}
 
 		save(success, error, context) {
@@ -30,7 +27,6 @@ define([
 				"url": this.url,
 				"crossDomain": true,
 				"data": this.toJSON(),
-				"dataType": "json",
 				"success": success,
 				"error": error,
 				"context": context

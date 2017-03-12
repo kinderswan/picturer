@@ -42,34 +42,28 @@ define([
 
 		submitAuth(event) {
 			event.preventDefault();
-			const login = this.$("#login").val();
-			const pass = this.$("#password").val();
-			this.setAuthModelData(login, pass);
+			Util.setCurrentUser(this.$("#login").val() +
+				this.$("#password").val());
+
+			this.setAuthModelData();
 			this.model.save(this.loginSuccess, this.loginError, this);
 		}
 
 		loginSuccess() {
-			Util.setCurrentUser({
-				"login": this.$("#login").val(),
-				"password": this.$("#password").val()
-			});
-			window.open(Util.indexUrl() + "home", "_self");
+			window.open(Util.indexUrl() + "#home", "_self");
 		}
 
 		loginError() {
 			this.displayAuthError();
 		}
 
-		displayAuthError(data) {
+		displayAuthError() {
 			this.$(".submitAuth").css("background", "red");
 			this.$(".submitAuth").text("Try again");
 		}
 
-		setAuthModelData(login, password) {
-			this.model.set({
-				"Login": login,
-				"Password": password
-			 });
+		setAuthModelData() {
+			this.model.set({ "UserHash": Util.getCurrentUser() });
 		}
     }
 

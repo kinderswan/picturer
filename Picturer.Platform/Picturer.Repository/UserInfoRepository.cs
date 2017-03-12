@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Picturer.Models;
 using Picturer.RedisConnector;
 using Picturer.RedisConnector.DataModels;
@@ -25,50 +19,18 @@ namespace Picturer.Repository
 			this.mJsonSerializer = jsonSerializer;
 		}
 
-		public async Task<string> IsUserAuthored(string login, string password)
+		public async Task<bool> IsUserAuthored(string userHash)
 		{
-			StringData data = await this.mRedisConnection.GetStringFromDatabase(login);
+			StringData data = await this.mRedisConnection.GetStringFromDatabase(userHash);
 			UserInfo result = this.mJsonSerializer.DeserializeStringDataToObject<UserInfo>(data);
 
-			var authored =  this.GetUserAuthority(result, login, password);
-
-			if (string.IsNullOrEmpty(authored))
-			{
-				await this.WriteUserInfo(new UserInfo()
-				{
-					Login = login,
-					SearchKey = login,
-					Password = password
-				});
-			}
-
-			return authored;
+			return (result != null) && !string.IsNullOrEmpty(result.UserHash);
 		}
 
 		public async Task<bool> WriteUserInfo(UserInfo userInfo)
 		{
-			var data = this.mJsonSerializer.SerializeToStringData(userInfo);
+			StringData data = this.mJsonSerializer.SerializeToStringData(userInfo);
 			return await this.mRedisConnection.WriteStringToDatabase(data);
-		}
-
-		private string GetUserAuthority(UserInfo result, string login, string password)
-		{
-			if (result == null)
-			{
-				return string.Empty;
-			}
-
-			if (result != null && result.Password == password && result.Login == login)
-			{
-				return string.Empty;
-			}
-			
-			if (result != null && result.Password != password)
-			{
-				return "Password is wrong";
-			}
-
-			return "Login is wrong";
 		}
 	}
 }

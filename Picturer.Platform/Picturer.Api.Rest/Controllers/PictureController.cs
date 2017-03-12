@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.Remoting.Messaging;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using System.Web.Http.Results;
 using AutoMapper;
-using Newtonsoft.Json;
-using Picturer.Api.Rest.Filters;
 using Picturer.Api.Rest.Models;
 using Picturer.Models;
 using Picturer.Services.Interfaces;
@@ -21,6 +12,8 @@ namespace Picturer.Api.Rest.Controllers
 	[EnableCors(origins: "*", headers: "*", methods: "*")]
 	public class PictureController : ApiController
 	{
+		private const string PicturePrefix = "PICTURE";
+
 		private readonly IPictureService mPictureService;
 
 		public PictureController()
@@ -37,7 +30,7 @@ namespace Picturer.Api.Rest.Controllers
 		[Route("picture/{searchKey}")]
 		public async Task<IHttpActionResult> GetPicture(string searchKey)
 		{
-			PictureModels models = await this.mPictureService.GetPictures("pictures" + searchKey);
+			PictureModels models = await this.mPictureService.GetPictures(PicturePrefix + searchKey);
 			return this.Json(models);
 		}
 
@@ -46,23 +39,22 @@ namespace Picturer.Api.Rest.Controllers
 		public async Task<IHttpActionResult> PostPicture([FromBody] PictureViewModel viewModel)
 		{
 			PictureModel writeModel = Mapper.Map<PictureViewModel, PictureModel>(viewModel);
-
+			writeModel.SearchKey = PicturePrefix + viewModel.UserHash;
 			return this.Json(await this.mPictureService.WritePicture(writeModel));
 		}
 
 		[HttpDelete]
 		[Route("picture/{searchKey}")]
-		[CustomAuthFilterAttribute]
 		public async Task<IHttpActionResult> DeletePicture(string searchKey)
 		{
-			return this.Json(await this.mPictureService.DeletePicture("pictures" + searchKey));
+			return this.Json(await this.mPictureService.DeletePicture(PicturePrefix + searchKey));
 		}
 
 		[HttpDelete]
 		[Route("picture")]
-		public async Task<IHttpActionResult> DeletePictureByUrl([FromUri]string searchKey, [FromUri]string paramToDelete)
+		public async Task<IHttpActionResult> DeletePictureById([FromUri]string searchKey, [FromUri]string paramToDelete)
 		{
-			return this.Json(await this.mPictureService.DeletePictureById("pictures" + searchKey, paramToDelete));
+			return this.Json(await this.mPictureService.DeletePictureById(PicturePrefix + searchKey, paramToDelete));
 		}
 	}
 }

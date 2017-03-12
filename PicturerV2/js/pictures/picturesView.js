@@ -115,7 +115,7 @@ define([
 			this.likeFoundResults(this.likesCollection.likedModelIds);
 		}
 
-		getLikesResults(event) {
+		getLikesResults() {
 			this.likesCollection.getLikes();
 		}
 
@@ -139,6 +139,7 @@ define([
 			const image = $(event.target).parents(".image").find("img")[0];
 			const el = this.findImageModel(image.src);
 			el.clickLike();
+			this.likesCollection.likedModelIds = el.updateLikedModels(this.likesCollection);
 		}
 
 		findImageModel(src) {
@@ -152,7 +153,7 @@ define([
 			const that = this;
 			_.each(likedModels, (model) => {
 				const el = that.findImageModel(model);
-				if (el) {
+				if (el && !el.model.get("isLiked")) {
 					el.clickLike();
 				}
 			});
@@ -170,6 +171,12 @@ define([
 
 		downloadLikes() {
 			this.zipDownloader.getZippedArchive(this.likesCollection.likedModelIds);
+		}
+
+		dispose() {
+			if (this.likesCollection) {
+				this.likesCollection.dispose();
+			}
 		}
     }
 

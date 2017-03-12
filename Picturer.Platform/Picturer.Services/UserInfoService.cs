@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Picturer.Models;
 using Picturer.Repository.Interfaces;
 using Picturer.Services.Interfaces;
@@ -11,16 +7,16 @@ namespace Picturer.Services
 {
 	public class UserInfoService: IUserInfoService
 	{
-		private IUserInfoRepository _userInfoRepository;
+		private readonly IUserInfoRepository _userInfoRepository;
 
 		public UserInfoService(IUserInfoRepository userInfoRepository)
 		{
 			this._userInfoRepository = userInfoRepository;
 		}
 
-		public async Task<string> IsUserAuthored(string login, string password)
+		public async Task<bool> IsUserAuthored(string userHash)
 		{
-			return await this._userInfoRepository.IsUserAuthored(login, password);
+			return await this._userInfoRepository.IsUserAuthored(userHash);
 		}
 
 		public async Task<bool> WriteUserInfo(UserInfo userInfo)

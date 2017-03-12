@@ -6,7 +6,7 @@ define([
 	"pictures/picturesView",
 	"auth/authView",
 	"shared/util"
-], ($, Backbone, PicturesView, AuthView, Util) => {
+], ($, Backbone, PicturesView, AuthView, Util) => { // eslint-disable-line max-params
 	"use strict";
 
     /**
@@ -47,10 +47,10 @@ define([
 		}
 
 		home() {
-			if (!Util.getCurrentUser()) {
-				this.navigate("", { "trigger": true });
-			} else {
+			if (Util.getCurrentUser()) {
 				new PicturesView({ "el": "#mainDiv" });
+			} else {
+				this.navigate("", { "trigger": true });
 			}
 		}
     }

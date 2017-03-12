@@ -39,19 +39,17 @@ define([
 				"crossDomain": true,
 				"data": this.postLikedModel(),
 				"dataType": "json",
-				"beforeSend": this.addHttpHeaders,
 				"success": success,
 				"error": error,
 				"context": context
 			});
 		}
 
-		destroy(success, error, context) {
+		destroyModel(success, error, context) {
 			$.ajax({
 				"type": "DELETE",
 				"url": this.destroyLikedModelLink(),
 				"crossDomain": true,
-				"beforeSend": this.addHttpHeaders,
 				"success": success,
 				"error": error,
 				"context": context
@@ -61,21 +59,15 @@ define([
 		postLikedModel() {
 			return {
 				"Id": this.get("id"),
-				"User": Util.getCurrentUser().login,
-				"Liked": "true",
-				"SearchKey": Util.getCurrentUser().login
+				"UserHash": Util.getCurrentUser(),
+				"Liked": "true"
 			};
 		}
 
 		destroyLikedModelLink() {
 			const id = encodeURIComponent(this.get("id"));
-			const user = encodeURIComponent(Util.getCurrentUser().login);
+			const user = encodeURIComponent(Util.getCurrentUser());
 			return `${this.url}/?searchKey=${user}&paramToDelete=${id}`;
-		}
-
-		addHttpHeaders(xhr) {
-			xhr.setRequestHeader("Login", Util.getCurrentUser().login);
-			xhr.setRequestHeader("Password", Util.getCurrentUser().password);
 		}
 	}
 	return PictureModel;

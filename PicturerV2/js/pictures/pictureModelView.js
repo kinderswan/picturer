@@ -91,8 +91,19 @@ define([
 				this.model.save(this.makeLikeImageRed, null, this);
 			} else {
 				this.model.set({ "isLiked": false });
-				this.model.destroy(this.makeLikeImageTransparent, null, this);
+				this.model.destroyModel(this.makeLikeImageTransparent, null, this);
 			}
+		}
+
+		updateLikedModels(likesCollection) {
+			const that = this;
+			if (this.model.get("isLiked") === true) {
+				likesCollection.likedModelIds.push(String(that.model.get("id")));
+				return likesCollection.likedModelIds;
+			}
+			return _.filter(likesCollection.likedModelIds, (x) => {
+				return x !== String(that.model.get("id"));
+			});
 		}
 
 		findModelOnPage() {

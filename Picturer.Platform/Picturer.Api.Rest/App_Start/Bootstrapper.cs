@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Web;
+﻿using System.Reflection;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;

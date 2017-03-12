@@ -14,7 +14,8 @@ require.config({
 		"cookiejs": "../libs/js.cookie",
 		"jszip": "../libs/jszip",
 		"jszipUtils": "../libs/jszip-utils",
-		"filesaver": "../libs/filesaver"
+		"filesaver": "../libs/filesaver",
+		"sha1": "../libs/sha1"
 	},
 	"shim": {
 		"backbone": {

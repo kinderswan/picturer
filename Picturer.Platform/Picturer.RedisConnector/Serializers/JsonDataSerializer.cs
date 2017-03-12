@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Picturer.RedisConnector.DataModels;
 
 namespace Picturer.RedisConnector.Serializers

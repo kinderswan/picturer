@@ -1,5 +1,5 @@
 /* jshint esversion:6 */
-define(["jquery", "cookiejs"], ($, Cookies) => {
+define(["jquery", "cookiejs", "sha1"], ($, Cookies, sha1) => {
 	class Util {
 		/**
 		 * Wraps something to array
@@ -25,8 +25,9 @@ define(["jquery", "cookiejs"], ($, Cookies) => {
 			return Cookies.getJSON("CurrentUser");
 		}
 
-		static setCurrentUser(user) {
-			Cookies.set("CurrentUser", user);
+		static setCurrentUser(preHash) {
+			const userHash = sha1(preHash);
+			Cookies.set("CurrentUser", userHash);
 		}
 
 		static indexUrl() {
